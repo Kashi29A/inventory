@@ -1,0 +1,50 @@
+<div class="card">
+    <p-tabView (onChange)="handleChangeParent($event)">
+        <p-tabPanel id="FHS" header="FHS" leftIcon="pi pi-calendar" tooltip="FHS Details">
+            <!-- <app-datatable></app-datatable> -->
+            <div class="card">
+                <p-tabView (onChange)="handleChange($event)">
+                    <p-tabPanel id="ICU" header="ICU" leftIcon="pi pi-calendar" tooltip="FHS ICU">
+                        <app-datatable [parentHeaderName]="parentHeader" [headerName]="header"></app-datatable>
+                    </p-tabPanel>
+                    <p-tabPanel id="PACU" header="PACU" rightIcon="pi pi-inbox" tooltip="FHS PACU">
+                        <app-datatable [parentHeaderName]="parentHeader" [headerName]="header"></app-datatable>
+                    </p-tabPanel>
+                    <p-tabPanel id="NICU" header="NICU" leftIcon="pi pi-user" rightIcon="pi pi-star" tooltip="FHS NICU">
+                        <app-datatable [parentHeaderName]="parentHeader" [headerName]="header"></app-datatable>
+                    </p-tabPanel>
+                </p-tabView>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel id="ACH" header="ACH" rightIcon="pi pi-inbox" tooltip="ACH Details">
+            <div class="card">
+                <p-tabView (onChange)="handleChange($event)">
+                    <p-tabPanel header="ICU" leftIcon="pi pi-calendar" tooltip="ACH ICU">
+                        <app-datatable [parentHeaderName]="parentHeader" [headerName]="header"></app-datatable>
+                    </p-tabPanel>
+                    <p-tabPanel header="PACU" rightIcon="pi pi-inbox" tooltip="ACH PACU">
+                        <app-datatable [parentHeaderName]="parentHeader" [headerName]="header"></app-datatable>
+                    </p-tabPanel>
+                    <p-tabPanel header="NICU" leftIcon="pi pi-user" rightIcon="pi pi-star" tooltip="ACH NICU">
+                        <app-datatable [parentHeaderName]="parentHeader" [headerName]="header"></app-datatable>
+                    </p-tabPanel>
+                </p-tabView>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel id="SLEH" header="SLEH" leftIcon="pi pi-user" rightIcon="pi pi-star" tooltip="SLEH Details">
+            <div class="card">
+                <p-tabView (onChange)="handleChange($event)">
+                    <p-tabPanel header="ICU" leftIcon="pi pi-calendar" tooltip="SLEH ICU">
+                        <app-datatable [parentHeaderName]="parentHeader" [headerName]="header"></app-datatable>
+                    </p-tabPanel>
+                    <p-tabPanel header="PACU" rightIcon="pi pi-inbox" tooltip="SLEH PACU">
+                        <app-datatable [parentHeaderName]="parentHeader" [headerName]="header"></app-datatable>
+                    </p-tabPanel>
+                    <p-tabPanel header="NICU" leftIcon="pi pi-user" rightIcon="pi pi-star" tooltip="SLEH NICU">
+                        <app-datatable [parentHeaderName]="parentHeader" [headerName]="header"></app-datatable>
+                    </p-tabPanel>
+                </p-tabView>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+</div>
