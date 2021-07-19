@@ -1,4 +1,8 @@
 export interface FHS {
-    FHS_id?:number;
-    hospital_list?:string
+    FHS_id?:number,
+    IDX?: number,
+    hospital_list?:string,
+    Hospital?:string,
+    Department?:string,
+    AdditionalDocURLs?: string
 }

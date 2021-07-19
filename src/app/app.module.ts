@@ -28,11 +28,18 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {TabViewModule} from 'primeng/tabview';
 import { TabsComponent } from './tabs/tabs.component';
+import {TooltipModule} from 'primeng/tooltip';
+import { LoginComponent } from './login/login.component';
+import { ActivateGuard } from './activate.guard';
+import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
+
 @NgModule({
   declarations: [
     AppComponent,
     DatatableComponent,
-    TabsComponent
+    TabsComponent,
+    LoginComponent,
+    PagenotfoundComponent
   ],
   imports: [
     BrowserModule,
@@ -59,11 +66,12 @@ import { TabsComponent } from './tabs/tabs.component';
     InputNumberModule,
     ConfirmDialogModule,
     InputTextareaModule,
-    TabViewModule
+    TabViewModule,
+    TooltipModule
   ],
   providers: [
     MessageService,
-    ConfirmationService],
+    ConfirmationService, ActivateGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,33 +1,59 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.0.28/jspdf.plugin.autotable.js"></script>
+
 <p-toast></p-toast>
 
-<p-dropdown (onChange)="handleChangeEMR($event)" [options]="EMR" placeholder="Select a EMR" [(ngModel)]="selectedEMR" optionLabel="name"></p-dropdown>
+<p-dropdown (onChange)="handleChangeEMR($event)" [options]="EMR" placeholder="Select a EMR" [(ngModel)]="selectedEMR"
+    optionLabel="name"></p-dropdown>
 
-<p-dropdown (onChange)="handleChangeHospital($event)" [disabled]="disabledHospital" [options]="fhs" placeholder="Select a Hospital" [(ngModel)]="selectedHospital" optionLabel="hospital_list"></p-dropdown>
+<p-dropdown (onChange)="handleChangeHospital($event)" [disabled]="disabledHospital" [options]="hospitalList"
+    placeholder="Select a Hospital" [(ngModel)]="selectedHospital"></p-dropdown>
 
-<p-dropdown (onChange)="handleChangeDept($event)" [disabled]="disabledDept" [options]="dept" placeholder="Select a Department" [(ngModel)]="selectedDept" optionLabel="name"></p-dropdown>
-
+<p-dropdown (onChange)="handleChangeDept($event)" [disabled]="disabledDept" [options]="deptList"
+    placeholder="Select a Department" [(ngModel)]="selectedDept"></p-dropdown>
+&nbsp;
+<button pButton pRipple type="button" (click)="removeFilters($event)" label="Remove Filters"
+    class="p-button-rounded p-button-help p-button-removefilter"></button>
 <div class="card">
     <p-toolbar styleClass="p-mb-4">
         <ng-template pTemplate="left">
-            <button [disabled]="disabledNew" pButton pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></button>
-           &nbsp; <button pButton pRipple [label]="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button>
+            <button pButton pRipple label="New" pTooltip="Add New Record" tooltipPosition="bottom" icon="pi pi-plus" class="p-button-success p-mr-2"
+                (click)="openNew()"></button>
+            &nbsp; <button pTooltip="Delete Selected Records" tooltipPosition="bottom" pButton pRipple [label]="Delete" icon="pi pi-trash" class="p-button-danger"
+                (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button>
         </ng-template>
 
         <ng-template pTemplate="right">
-            <!-- <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="p-mr-2 p-d-inline-block"></p-fileUpload> -->
-            <button [disabled]="disabledNew" type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-warning p-mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+            <button type="button" pButton pRipple icon="pi pi-file-o"
+                (click)="dt.exportCSV()" class="p-mr-2" pTooltip="Export Table Data" tooltipPosition="bottom"></button>
+
         </ng-template>
     </p-toolbar>
 
-    <p-table #dt [value]="tabledata" [rows]="10" [paginator]="true" [globalFilterFields]="['hospital_list','FHS_id','record.FHS_id','fhs','record.hospital_list']"
-        [(selection)]="selectedProducts" [rowHover]="true" dataKey="FHS_id"
+    <p-table [columns]="cols" id="my-table" #dt [value]="tabledata" [rowsPerPageOptions]="[5,10,25]" [paginator]="true"
+        [rows]="5" [showCurrentPageReport]="true"
+        [globalFilterFields]="['Department', 'Hospital','tabledata','State','HospitalDeviceID','EMRDeviceID','EMRInterface', 'Location', 'DeviceType']"
+        [(selection)]="selectedProducts" [rowHover]="true" dataKey="IDX"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+        <!-- <ng-template pTemplate="colgroup" let-columns>
+            <colgroup>
+                <col style="width:30px">
+                <col style="width:250px">
+                <col style="width:250px">
+                <col style="width:200px">
+                <col style="width:150px">
+                <col style="width:250px">
+                <col style="width:150px">
+                <col style="width:300px">
+                <col style="width:300px">
+            </colgroup>
+        </ng-template> -->
         <ng-template pTemplate="caption">
             <div class="p-d-flex p-ai-center p-jc-between">
                 <h5 class="p-m-0">Manage Records</h5>
                 <span class="p-input-icon-left">
                     <i class="pi pi-search"></i>
-                    <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+                    <input pTooltip="Search anything in table" tooltipPosition="right" pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                        placeholder="Search..." />
                 </span>
             </div>
         </ng-template>
@@ -36,8 +62,23 @@
                 <th style="width: 3rem">
                     <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                 </th>
-                <th pSortableColumn="FHS_id">{{parentHeaderName + headerName}} <p-sortIcon field="FHS_id"></p-sortIcon></th>
-                <th pSortableColumn="hospital_list">Hospitals <p-sortIcon field="hospital_list"></p-sortIcon></th>
+                <th pSortableColumn="Hospital">Hospitals <p-sortIcon field="Hospital"></p-sortIcon>
+                </th>
+                <th pSortableColumn="State">State<p-sortIcon field="State">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="Department">Department <p-sortIcon field="Department"></p-sortIcon>
+                </th>
+                <th pSortableColumn="Location">Location <p-sortIcon field="Location"></p-sortIcon>
+                </th>
+                <th pSortableColumn="DeviceType">Device Type <p-sortIcon field="DeviceType"></p-sortIcon>
+                </th>
+                <th pSortableColumn="HospitalDeviceID">Hospital Device ID<p-sortIcon field="HospitalDeviceID"></p-sortIcon>
+                </th>
+                <th pSortableColumn="EMRDeviceID">EMR Device ID<p-sortIcon field="EMRDeviceID"></p-sortIcon>
+                </th>
+                <th pSortableColumn="EMRInterface">EMR Interface<p-sortIcon field="EMRInterface"></p-sortIcon>
+                </th>
                 <th></th>
             </tr>
         </ng-template>
@@ -46,35 +87,228 @@
                 <td>
                     <p-tableCheckbox [value]="record"></p-tableCheckbox>
                 </td>
-                <td>{{record.FHS_id}}</td>
-                <td>{{record.hospital_list}}</td>
+                <td>{{record.Hospital}}</td>
+                <td>{{record.State}}</td>
+                <td>{{record.Department}}</td>
+                <td>{{record.Location}}</td>
+                <td>{{record.DeviceType}}</td>
+                <td>{{record.HospitalDeviceID}}</td>
+                <td>{{record.EMRDeviceID}}</td>
+                <td>{{record.EMRInterface}}</td>
                 <td>
-                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editRecord(record)"></button>
-                    &nbsp;  <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteRecord(record)"></button>
+                    <button pTooltip="Edit this record" tooltipPosition="bottom" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2"
+                        (click)="editRecord(record)"></button>
+                    <button pTooltip="Delete this record" tooltipPosition="bottom" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                        (click)="deleteRecord(record)"></button>
+                    <button pTooltip="View all the details related to this record" tooltipPosition="left" pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info"
+                        (click)="viewRecord(record)"></button>
                 </td>
             </tr>
-        </ng-template>
-        <ng-template pTemplate="summary">
-            <div class="p-d-flex p-ai-center p-jc-between">
-                In total there are {{fhs ? fhs.length : 0 }} fhs.
-            </div>
         </ng-template>
     </p-table>
 </div>
 
-<p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Inventory Details" [modal]="true" styleClass="p-fluid">
+<p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Edit Inventory Details" [modal]="true"
+    styleClass="p-fluid">
     <ng-template pTemplate="content">
-        <!-- <img [src]="'assets/showcase/images/demo/product/' + product.image" [alt]="product.image" class="product-image" *ngIf="product.image"> -->
         <div class="p-field">
-            <label for="name">Hospital Name</label> &nbsp;
-            <input style="margin-top: 5px;" type="text" pInputText id="name" [(ngModel)]="record.hospital_list" required autofocus />
-            <small class="p-error" *ngIf="submitted && !record.hospital_list">Hospital Name is required.</small>
+            <label for="name">Region</label> &nbsp;
+            <p-dropdown  [style]="{margin: '0'}" [options]="EMR" placeholder="Select a Region"
+                [(ngModel)]="record.Region" required optionLabel="name" optionValue="name"></p-dropdown>
+            <small class="p-error" *ngIf="submitted && !record.Region">Region Name is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="name">State</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="State" [(ngModel)]="record.State" required
+                autofocus />
+            <small class="p-error" *ngIf="submitted && !record.State">State Name is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="Location">Location</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="Location" [(ngModel)]="record.Location" required
+                autofocus />
+            <small class="p-error" *ngIf="submitted && !record.Location">Location Name is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="Hospital">Hospital</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="Hospital" [(ngModel)]="record.Hospital" required
+                autofocus />
+            <small class="p-error" *ngIf="submitted && !record.Hospital">Hospital Name is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="HospitalContacts">Hospital Contacts</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="HospitalContacts"
+                [(ngModel)]="record.HospitalContacts" required autofocus />
+            <small class="p-error" *ngIf="submitted && !record.HospitalContacts">Hospital Contacts is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="Department">Department</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="Department" [(ngModel)]="record.Department" required
+                autofocus />
+            <small class="p-error" *ngIf="submitted && !record.Department">Department Name is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="DeviceType">Device Type</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="DeviceType" [(ngModel)]="record.DeviceType" required
+                autofocus />
+            <small class="p-error" *ngIf="submitted && !record.DeviceType">Device Type is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="EMRInterface">EMR Interface</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="EMRInterface" [(ngModel)]="record.EMRInterface" required
+                autofocus />
+            <small class="p-error" *ngIf="submitted && !record.EMRInterface">EMR Interface Details is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="EMRIntConDetails">EMR Int Con Details</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="EMRIntConDetails" [(ngModel)]="record.EMRIntConDetails"
+                required autofocus />
+            <small class="p-error" *ngIf="submitted && !record.EMRIntConDetails">EMR Int Con Details is
+                required.</small>
+        </div>
+        <div class="p-field">
+            <label for="Vendor">Vendor</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="Vendor" [(ngModel)]="record.Vendor" required
+                autofocus />
+            <small class="p-error" *ngIf="submitted && !record.Vendor">Vendor Name is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="VendorContacts">Vendor Contacts</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="VendorContacts"
+                [(ngModel)]="record.VendorContacts" required autofocus />
+            <small class="p-error" *ngIf="submitted && !record.VendorContacts">Vendor Contacts is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="ServerTypeName">Server Type Name</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="ServerTypeName"
+                [(ngModel)]="record.ServerTypeName" required autofocus />
+            <small class="p-error" *ngIf="submitted && !record.ServerTypeName">Server Type Name is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="ServerConDetails">Server Con Details</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="ServerConDetails"
+                [(ngModel)]="record.ServerConDetails" required autofocus />
+            <small class="p-error" *ngIf="submitted && !record.ServerConDetails">Server Con Details is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="SoftwareOSDetails">Software OS Details</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="SoftwareOSDetails" [(ngModel)]="record.SoftwareOSDetails" required
+                autofocus />
+            <small class="p-error" *ngIf="submitted && !record.SoftwareOSDetails">Software OS Details is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="ServerContent">Server Content</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="ServerContent" [(ngModel)]="record.ServerContent"
+                required autofocus />
+            <small class="p-error" *ngIf="submitted && !record.ServerContent">Server Content is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="CEBioMedContacts">CE Bio Med Contacts</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="CEBioMedContacts"
+                [(ngModel)]="record.CEBioMedContacts" required autofocus />
+            <small class="p-error" *ngIf="submitted && !record.CEBioMedContacts">CE Bio Med Contacts is
+                required.</small>
+        </div>
+        <div class="p-field">
+            <label for="CEBioMedManager">CE Bio Med Manager</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="CEBioMedManager"
+                [(ngModel)]="record.CEBioMedManager" required autofocus />
+            <small class="p-error" *ngIf="submitted && !record.CEBioMedManager">CE Bio Med Manager is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="SNOWGroup">SNOW Group</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="SNOWGroup" [(ngModel)]="record.SNOWGroup"
+                required autofocus />
+            <small class="p-error" *ngIf="submitted && !record.SNOWGroup">SNOW Group is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="AdditionalDocURLs">Additional Doc URLs</label> &nbsp;
+            <input style="margin-top: 5px;" type="text" pInputText id="AdditionalDocURLs"
+                [(ngModel)]="record.AdditionalDocURLs" required autofocus />
+            <small class="p-error" *ngIf="submitted && !record.AdditionalDocURLs">Additional Doc URLs is
+                required.</small>
         </div>
     </ng-template>
-    
+
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-        &nbsp;  <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveProduct()"></button>
+        &nbsp; <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+            (click)="saveProduct()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="viewDialog" [style]="{width: '450px'}" header="Inventory Details" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field details">
+            <label for="name"><b>Region : </b>{{record.Region}}</label> &nbsp;
+        </div>
+        <div class="p-field details">
+            <label for="name"><b>Hospital : </b>{{record.Hospital}}</label> &nbsp;
+        </div>
+        <div class="p-field details">
+            <label for="name"><b>Department : </b>{{record.Department}}</label> &nbsp;
+        </div>
+        <div class="p-field details">
+            <label for="name"><b>Location Details-</b>
+                <div>Location : {{record.Location}} </div>
+                <div>State : {{record.State}} </div>
+            </label> &nbsp;
+        </div>
+        <!-- <div class="p-field details">
+            <label for="name">Device Type : {{record.DeviceType}}</label> &nbsp;
+        </div>
+        <div class="p-field details">
+            <label for="name">Hospital Device ID : {{record.HospitalDeviceID}}</label>
+        </div> -->
+        <div class="p-field details">
+            <label for="name"><b>Device Details -</b>
+                <div>Device Type : {{record.DeviceType}} </div>
+                <div>Hospital Device ID : {{record.HospitalDeviceID}} </div>
+                <div>EMR Device ID : {{record.EMRDeviceID}} </div>
+                <div>EMR Interface : {{record.EMRInterface}}</div>
+                <div>EMR Int Con Details : {{record.EMRIntConDetails}}</div>
+            </label>
+        </div>
+        <div class="p-field details">
+            <label for="name"><b>Vendor Details -</b>
+                <div>Vendor Name : {{record.Vendor}} </div>
+                <div>Vendor Contacts : {{record.VendorContacts}}</div>
+            </label>
+        </div>
+        <div class="p-field details">
+            <label for="name"><b>Server Details -</b>
+                <div>Server Type Name : {{record.ServerTypeName}} </div>
+                <div>Server Con Details : {{record.ServerConDetails}}</div>
+                <div>Server Content : {{record.ServerContent}}</div>
+            </label>
+        </div>
+        <div class="p-field details">
+            <label for="name"><b>Software OS -</b> {{record.SoftwareOSDetails}}</label>
+        </div>
+        <div class="p-field details">
+            <label for="name"><b>CE Bio Med Details -</b>
+                <div>CE Bio Med Manager : {{record.CEBioMedManager}} </div>
+                <div>CE Bio Med Contacts : {{record.CEBioMedContacts}}</div>
+            </label>
+        </div>
+        <div class="p-field details">
+            <label for="name"><b>SNOW Group -</b>{{record.SNOWGroup}}</label>
+        </div>
+        <div class="p-field details">
+            <label for="name"><b>Additional Doc URLs -</b><a target="_blank" href=`{{record.AdditionalDocURLs}}`>
+                    {{record.AdditionalDocURLs}}</a> </label>
+        </div>
+        <div class="p-field details">
+            <label for="name"><b>Last Modified User -</b>{{record.LastModifiedUser}} </label>
+        </div>
+        <div class="p-field details">
+            <label for="name"><b>Last Modified Date Time -</b>{{record.LastModifiedDateTime}} </label>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
     </ng-template>
 </p-dialog>
 
